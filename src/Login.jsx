@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
 export default function Login() {
   // Variables
   let loginBtn = document.querySelector(".login-btn");
@@ -11,6 +12,7 @@ export default function Login() {
 
   let [showPassword, setShowPassword] = useState(false);
 
+  let navigate = useNavigate();
   return (
     <>
       <div dir="rtl" className="login-body">
@@ -62,7 +64,8 @@ export default function Login() {
                   emailInput == localStorage.getItem("email") &&
                   passwordInput == localStorage.getItem("password")
                 ) {
-                  location.pathname = "/";
+                  localStorage.setItem("isLoggedIn", "true");
+                  navigate("/");
                 } else {
                   emailInput == ""
                     ? setEmailError("من فضلك ادخل ايميلك")

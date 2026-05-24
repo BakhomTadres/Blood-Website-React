@@ -1,10 +1,27 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+
 export default function Header({ active }) {
-  let [loginName, setLoginName] = useState(
-    localStorage.getItem("loginName") || false,
+  const navigate = useNavigate();
+
+  let [isLoggedIn, setIsLoggedIn] = useState(
+    localStorage.getItem("isLoggedIn") === "true",
   );
   let [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  function handleAuthClick(e) {
+    e.preventDefault();
+    if (isLoggedIn) {
+      // تسجيل خروج
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("userName");
+      setIsLoggedIn(false);
+      navigate("/login")
+    } else {
+      // الذهاب لصفحة التسجيل
+      navigate("/register");
+    }
+  }
 
   return (
     <>
@@ -65,9 +82,9 @@ export default function Header({ active }) {
           <div className="logo-section">
             <div className="bar" onClick={() => setIsMenuOpen(!isMenuOpen)}>
               {isMenuOpen ? (
-                <i className="fa-solid fa-xmark"></i> // أيقونة الإغلاق لو مفتوح
+                <i className="fa-solid fa-xmark"></i>
               ) : (
-                <i className="fa-solid fa-bars"></i> // أيقونة الـ القائمة لو مقفول
+                <i className="fa-solid fa-bars"></i>
               )}
             </div>
             <div className="logo">
@@ -126,16 +143,8 @@ export default function Header({ active }) {
             style={{ margin: "10px", cursor: "pointer" }}
             className="header-action"
           >
-            <a
-              onClick={(e) => {
-                e.preventDefault();
-                location.pathname = "/register";
-                setLoginName(!loginName);
-                localStorage.setItem("loginName", !loginName);
-              }}
-              className="btn-register"
-            >
-              {loginName ? "تسجيل الخروج" : "التسجيل"}
+            <a onClick={handleAuthClick} className="btn-register">
+              {isLoggedIn ? "تسجيل الخروج" : "التسجيل"}
             </a>
           </div>
         </div>

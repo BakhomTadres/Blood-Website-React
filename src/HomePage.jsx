@@ -1,6 +1,8 @@
 import Header from "./Components/Header";
 import Footer from "./Components/Footer";
+import { useNavigate } from "react-router";
 export default function HomePage() {
+  let navigate = useNavigate();
   return (
     <>
       <Header active="home" />
@@ -13,14 +15,11 @@ export default function HomePage() {
             <h3>كن سببًا في شفاء آخرين</h3>
             <br />
             <div className="buttons">
-              <button
-                onClick={() => (location.pathname = "/add")}
-                className="btn primary"
-              >
+              <button onClick={() => navigate("/add")} className="btn primary">
                 سجّل كمتبرع
               </button>
               <button
-                onClick={() => (location.href = "/donors")}
+                onClick={() => navigate("/donors")}
                 className="btn outline"
               >
                 اطلب متبرعًا

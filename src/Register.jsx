@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
+
 export default function Register() {
-  // Variables
-  let registerBtn = document.querySelector(".register-btn");
+  const navigate = useNavigate();
 
   let [nameInput, setNameInput] = useState("");
   let [emailInput, setEmailInput] = useState("");
@@ -49,11 +50,11 @@ export default function Register() {
           <select
             name="city"
             id="city"
+            value={citySelect}
             onChange={(e) => {
               setCitySelect(e.target.value);
               localStorage.setItem("city", e.target.value);
             }}
-            value={localStorage.getItem("city") || "قنا"}
           >
             <option value="القاهرة">القاهرة</option>
             <option value="الإسكندرية">الإسكندرية</option>
@@ -85,11 +86,10 @@ export default function Register() {
           </select>
           <div className="pass-field">
             <input
-              type="password"
-              name="pass"
               type={showPassword ? "text" : "password"}
+              name="pass"
               value={passwordInput}
-              placeholder=" ادخل كلمة السر"
+              placeholder="ادخل كلمة السر"
               className="pass-input"
               onChange={(e) => {
                 setPasswordInput(e.target.value);
@@ -113,24 +113,27 @@ export default function Register() {
               className="register-btn"
               onClick={(e) => {
                 e.preventDefault();
-                // Test for registeration
                 if (
-                  nameInput != "" &&
-                  emailInput != "" &&
+                  nameInput !== "" &&
+                  emailInput !== "" &&
                   emailInput.includes("@") &&
                   passwordInput.length >= 8
                 ) {
-                  location.pathname = "/";
+                  localStorage.setItem("isLoggedIn", "true");
+                  localStorage.setItem("userName", nameInput);
+
                   setNameInput("");
                   setEmailInput("");
                   setCitySelect("قنا");
                   setPasswordInput("");
+
+                  navigate("/");
                 } else {
-                  nameInput == ""
+                  nameInput === ""
                     ? setNameError("من فضلك ادخل اسمك")
                     : setNameError("");
 
-                  emailInput == ""
+                  emailInput === ""
                     ? setEmailError("من فضلك ادخل ايميلك")
                     : !emailInput.includes("@")
                       ? setEmailError("من فضلك ادخل ايميلك و تحتوي علي @")
@@ -153,7 +156,7 @@ export default function Register() {
               }}
               onClick={(e) => {
                 e.preventDefault();
-                location.pathname = "/login";
+                navigate("/login");
               }}
             >
               تسجيل الدخول

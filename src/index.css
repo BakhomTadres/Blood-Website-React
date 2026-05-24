@@ -1087,6 +1087,7 @@ textarea {
   text-decoration: none;
   color: #666;
   transition: var(--main-transition);
+  cursor: pointer;
 }
 
 .footer-column ul li a:hover {

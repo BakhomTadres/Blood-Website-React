@@ -1,4 +1,7 @@
+import { useNavigate } from "react-router";
+
 export default function Footer() {
+    let navigate = useNavigate();
   return (
     <>
       <footer className="main-footer">
@@ -7,19 +10,19 @@ export default function Footer() {
             <h3>الرئيسية</h3>
             <ul style={{ marginRight: "20px" }}>
               <li>
-                <a href="home.html">الرئيسية</a>
+                <a onClick={() => navigate("/")}>الرئيسية</a>
               </li>
               <li>
-                <a href="about.html">أهدافنا من التطوع</a>
+                <a onClick={() => navigate("/about")}>أهدافنا من التطوع</a>
               </li>
               <li>
-                <a href="add.html">اضافة متبرع</a>
+                <a onClick={() => navigate("/add")}>اضافة متبرع</a>
               </li>
               <li>
-                <a href="donors.html">بحث عن متبرع</a>
+                <a onClick={() => navigate("/donors")}>بحث عن متبرع</a>
               </li>
               <li>
-                <a href="details.html">التفاصيل</a>
+                <a onClick={() => navigate("/details")}>التفاصيل</a>
               </li>
             </ul>
           </div>
@@ -45,7 +48,7 @@ export default function Footer() {
           <div className="footer-column brand-section">
             <button
               className="register-btn"
-              onClick={() => (location.pathname = "/add")}
+              onClick={() => (navigate("/add"))}
             >
               سجل كمتبرع
             </button>
