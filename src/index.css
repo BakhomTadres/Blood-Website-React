@@ -1042,7 +1042,7 @@ textarea {
 /* Start Footer */
 .main-footer {
   background-color: #ffffff;
-  background-image: url("images/footer.jpg");
+  background-image: url("/images/footer.jpg");
   background-repeat: no-repeat;
   background-size: 40%;
   padding: 40px 0 20px 0;
