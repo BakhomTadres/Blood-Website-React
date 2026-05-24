@@ -11,11 +11,11 @@ export default function Details() {
           <div className="about-images">
             <div className="img-box" data-aos="fade-up">
               <h4>Before</h4>
-              <img src="/src/images/before.jpg" />
+              <img src="./images/before.jpg" />
             </div>
             <div className="img-box" data-aos="fade-up">
               <h4>After</h4>
-              <img src="/src/images/after.jpg" />
+              <img src="./images/after.jpg" />
               <div className="dot"></div>
             </div>
           </div>
