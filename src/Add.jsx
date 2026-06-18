@@ -2,29 +2,56 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import Footer from "./Components/Footer";
 import Header from "./Components/Header";
+import axios from "axios";
+import { useDonors } from "./DonorsContext";
 
 export default function Add({ donors, setDonors }) {
+  const { addDonor } = useDonors();
   const navigate = useNavigate();
 
   let [nameDonor, setNameDonor] = useState("");
-  let [citySelect, setCitySelect] = useState(
-    localStorage.getItem("city") || "قنا",
-  );
+  let [citySelect, setCitySelect] = useState("قنا");
   let [emailDonor, setEmailDonor] = useState("");
-  let [bloodGroup, setBloodGroup] = useState(
-    localStorage.getItem("bloodGroup") || "+A",
-  );
+  let [bloodGroup, setBloodGroup] = useState("A+");
   let [phoneDonor, setPhoneDonor] = useState("");
   let [addressDonor, setAddressDonor] = useState("");
 
-  const [gender, setGender] = useState(
-    localStorage.getItem("gender") || "male",
-  );
+  const [gender, setGender] = useState("male");
 
   let [phoneError, setPhoneError] = useState("");
   let [addressError, setAddressError] = useState("");
   let [nameError, setNameError] = useState("");
   let [emailError, setEmailError] = useState("");
+
+  const cityArray = [
+    "القاهرة",
+    "الإسكندرية",
+    "بورسعيد",
+    "السويس",
+    "الجيزة",
+    "دمياط",
+    "الدقهلية",
+    "الشرقية",
+    "القليوبية",
+    "كفر الشيخ",
+    "الغربية",
+    "المنوفية",
+    "البحيرة",
+    "الإسماعيلة",
+    "بني سويف",
+    "الفيوم",
+    "المنيا",
+    "أسيوط",
+    "سوهاج",
+    "قنا",
+    "الأقصر",
+    "أسوان",
+    "البحر الأحمر",
+    "الوادي الجديد",
+    "مطروح",
+    "شمال سيناء",
+    "جنوب سيناء",
+  ];
 
   return (
     <>
@@ -71,7 +98,6 @@ export default function Add({ donors, setDonors }) {
                         checked={gender === "male"}
                         onChange={() => {
                           setGender("male");
-                          localStorage.setItem("gender", "male");
                         }}
                       />{" "}
                       ذكر
@@ -84,7 +110,6 @@ export default function Add({ donors, setDonors }) {
                         checked={gender === "female"}
                         onChange={() => {
                           setGender("female");
-                          localStorage.setItem("gender", "female");
                         }}
                       />
                       أنثى
@@ -95,22 +120,22 @@ export default function Add({ donors, setDonors }) {
                 <div className="field">
                   <label>فصيلة الدم</label>
                   <select
+                    dir="ltr"
                     className="blood-group"
                     required
                     value={bloodGroup}
                     onChange={(e) => {
                       setBloodGroup(e.target.value);
-                      localStorage.setItem("bloodGroup", e.target.value);
                     }}
                   >
-                    <option value="+A">+A</option>
-                    <option value="-A">-A</option>
-                    <option value="+B">+B</option>
-                    <option value="-B">-B</option>
-                    <option value="+AB">+AB</option>
-                    <option value="-AB">-AB</option>
-                    <option value="+O">+O</option>
-                    <option value="-O">-O</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
                   </select>
                 </div>
               </div>
@@ -155,36 +180,13 @@ export default function Add({ donors, setDonors }) {
                     value={citySelect}
                     onChange={(e) => {
                       setCitySelect(e.target.value);
-                      localStorage.setItem("city", e.target.value);
                     }}
                   >
-                    <option value="القاهرة">القاهرة</option>
-                    <option value="الإسكندرية">الإسكندرية</option>
-                    <option value="بورسعيد">بورسعيد</option>
-                    <option value="السويس">السويس</option>
-                    <option value="الجيزة">الجيزة</option>
-                    <option value="دمياط">دمياط</option>
-                    <option value="الدقهلية">الدقهلية</option>
-                    <option value="الشرقية">الشرقية</option>
-                    <option value="القليوبية">القليوبية</option>
-                    <option value="كفر الشيخ">كفر الشيخ</option>
-                    <option value="الغربية">الغربية</option>
-                    <option value="المنوفية">المنوفية</option>
-                    <option value="البحيرة">البحيرة</option>
-                    <option value="الإسماعيلة">الإسماعيلة</option>
-                    <option value="بني سويف">بني سويف</option>
-                    <option value="الفيوم">الفيوم</option>
-                    <option value="المنيا">المنيا</option>
-                    <option value="أسيوط">أسيوط</option>
-                    <option value="سوهاج">سوهاج</option>
-                    <option value="قنا">قنا</option>
-                    <option value="الأقصر">الأقصر</option>
-                    <option value="أسوان">أسوان</option>
-                    <option value="البحر الأحمر">البحر الأحمر</option>
-                    <option value="الوادي الجديد">الوادي الجديد</option>
-                    <option value="مطروح">مطروح</option>
-                    <option value="شمال سيناء">شمال سيناء</option>
-                    <option value="جنوب سيناء">جنوب سيناء</option>
+                    {cityArray.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -210,7 +212,7 @@ export default function Add({ donors, setDonors }) {
                 onClick={(e) => {
                   e.preventDefault();
 
-                  const validPhone =
+                  const validatePhone =
                     phoneDonor.length === 11 &&
                     (phoneDonor.startsWith("012") ||
                       phoneDonor.startsWith("011") ||
@@ -219,23 +221,28 @@ export default function Add({ donors, setDonors }) {
 
                   if (
                     nameDonor !== "" &&
-                    validPhone &&
+                    validatePhone &&
                     addressDonor !== "" &&
                     emailDonor.includes("@")
                   ) {
                     let donor = {
                       name: nameDonor,
-                      address: addressDonor,
-                      city: citySelect,
-                      phone: phoneDonor,
-                      email: emailDonor,
                       gender: gender,
                       bloodGroup: bloodGroup,
+                      email: emailDonor,
+                      phone: phoneDonor,
+                      city: citySelect,
+                      address: addressDonor,
                     };
+                    const token = localStorage.getItem("token");
 
-                    const newDonors = [...donors, donor];
-                    setDonors(newDonors);
-                    localStorage.setItem("donors", JSON.stringify(newDonors));
+                    axios
+                      .post("https://blood-website-backend.vercel.app//api/donors/add", donor, {
+                        headers: {
+                          Authorization: `Bearer ${token}`,
+                        },
+                      })
+                      .then((res) => addDonor(res.data.data.donor));
 
                     // Reset fields
                     setNameDonor("");

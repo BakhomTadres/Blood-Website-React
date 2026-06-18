@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-
+import axios from "axios";
+import { useUser } from "./UserContext";
 export default function Register() {
   const navigate = useNavigate();
 
@@ -16,6 +17,37 @@ export default function Register() {
   let [passwordError, setPasswordError] = useState("");
   let [showPassword, setShowPassword] = useState(false);
 
+  const cityArray = [
+    "القاهرة",
+    "الإسكندرية",
+    "بورسعيد",
+    "السويس",
+    "الجيزة",
+    "دمياط",
+    "الدقهلية",
+    "الشرقية",
+    "القليوبية",
+    "كفر الشيخ",
+    "الغربية",
+    "المنوفية",
+    "البحيرة",
+    "الإسماعيلة",
+    "بني سويف",
+    "الفيوم",
+    "المنيا",
+    "أسيوط",
+    "سوهاج",
+    "قنا",
+    "الأقصر",
+    "أسوان",
+    "البحر الأحمر",
+    "الوادي الجديد",
+    "مطروح",
+    "شمال سيناء",
+    "جنوب سيناء",
+  ];
+
+  const { user, setUser } = useUser();
   return (
     <>
       <div dir="rtl" className="register-body">
@@ -30,7 +62,6 @@ export default function Register() {
             value={nameInput}
             onChange={(e) => {
               setNameInput(e.target.value);
-              localStorage.setItem("name", e.target.value);
             }}
           />
           <p className="name-error">{nameError}</p>
@@ -43,7 +74,6 @@ export default function Register() {
             required
             onChange={(e) => {
               setEmailInput(e.target.value);
-              localStorage.setItem("email", e.target.value);
             }}
           />
           <p className="email-error">{emailError}</p>
@@ -53,36 +83,13 @@ export default function Register() {
             value={citySelect}
             onChange={(e) => {
               setCitySelect(e.target.value);
-              localStorage.setItem("city", e.target.value);
             }}
           >
-            <option value="القاهرة">القاهرة</option>
-            <option value="الإسكندرية">الإسكندرية</option>
-            <option value="بورسعيد">بورسعيد</option>
-            <option value="السويس">السويس</option>
-            <option value="الجيزة">الجيزة</option>
-            <option value="دمياط">دمياط</option>
-            <option value="الدقهلية">الدقهلية</option>
-            <option value="الشرقية">الشرقية</option>
-            <option value="القليوبية">القليوبية</option>
-            <option value="كفر الشيخ">كفر الشيخ</option>
-            <option value="الغربية">الغربية</option>
-            <option value="المنوفية">المنوفية</option>
-            <option value="البحيرة">البحيرة</option>
-            <option value="الإسماعيلة">الإسماعيلة</option>
-            <option value="بني سويف">بني سويف</option>
-            <option value="الفيوم">الفيوم</option>
-            <option value="المنيا">المنيا</option>
-            <option value="أسيوط">أسيوط</option>
-            <option value="سوهاج">سوهاج</option>
-            <option value="قنا">قنا</option>
-            <option value="الأقصر">الأقصر</option>
-            <option value="أسوان">أسوان</option>
-            <option value="البحر الأحمر">البحر الأحمر</option>
-            <option value="الوادي الجديد">الوادي الجديد</option>
-            <option value="مطروح">مطروح</option>
-            <option value="شمال سيناء">شمال سيناء</option>
-            <option value="جنوب سيناء">جنوب سيناء</option>
+            {cityArray.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
           </select>
           <div className="pass-field">
             <input
@@ -93,7 +100,6 @@ export default function Register() {
               className="pass-input"
               onChange={(e) => {
                 setPasswordInput(e.target.value);
-                localStorage.setItem("password", e.target.value);
               }}
             />
             <div
@@ -111,7 +117,7 @@ export default function Register() {
           <div className="buttons">
             <button
               className="register-btn"
-              onClick={(e) => {
+              onClick={async (e) => {
                 e.preventDefault();
                 if (
                   nameInput !== "" &&
@@ -119,15 +125,29 @@ export default function Register() {
                   emailInput.includes("@") &&
                   passwordInput.length >= 8
                 ) {
-                  localStorage.setItem("isLoggedIn", "true");
-                  localStorage.setItem("userName", nameInput);
+                  try {
+                    const res = await axios.post(
+                      "https://blood-website-backend.vercel.app/api/users/register",
+                      {
+                        name: nameInput,
+                        email: emailInput,
+                        city: citySelect,
+                        password: passwordInput,
+                      },
+                    );
+                    setUser(res.data.data.user);
+                    setNameInput("");
+                    setEmailInput("");
+                    setCitySelect("قنا");
+                    setPasswordInput("");
+                    localStorage.setItem("token", res.data.data.user.token);
+                    navigate("/");
+                  } catch (err) {
+                    const message = err.response?.data?.message;
 
-                  setNameInput("");
-                  setEmailInput("");
-                  setCitySelect("قنا");
-                  setPasswordInput("");
-
-                  navigate("/");
+                    if (message === "Email is exist")
+                      setEmailError("الايميل موجود مسبقا");
+                  }
                 } else {
                   nameInput === ""
                     ? setNameError("من فضلك ادخل اسمك")

@@ -204,6 +204,8 @@
 .nav-menu ul li a:hover,
 .nav-menu ul li a.active {
   color: var(--main-color);
+}
+.nav-menu ul li a.active {
   font-weight: 700;
 }
 .nav-menu ul li a:hover::after {
@@ -214,14 +216,17 @@
   display: none;
   position: absolute;
   top: 100%;
-  width: 100%;
+  width: 80%;
   text-align: center;
   background-color: #f9f9f9;
   transition: var(--main-transition);
   z-index: 1000;
+  height: 100vh;
+  padding-top: 30px;
 }
 .nav-menu-alt ul {
   list-style: none;
+  position: relative;
 }
 .nav-menu-alt ul li {
   border-bottom: 1px solid #e7e4e4;
@@ -278,6 +283,19 @@
   background-color: var(--hover-color) !important;
   transform: scale(1.05);
   color: #fff !important;
+}
+.profile {
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--main-color);
+  font-size: 26px;
+  font-weight: bold;
+  cursor: pointer;
 }
 /* End Header */
 
@@ -784,7 +802,7 @@ textarea {
   border-radius: 10px;
   font-weight: bold;
 }
-.profile i {
+.profile-donor i {
   font-size: 50px;
   color: var(--main-color);
 }
@@ -798,6 +816,56 @@ textarea {
 .mail i {
   color: var(--main-color);
   margin-left: 10px;
+}
+.icons-edit {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 75px;
+  margin-top: -5px;
+  padding-bottom: 10px;
+}
+.icons-edit div:nth-child(2) {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  border: 1px solid rgb(42, 159, 236);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: var(--main-transition);
+}
+.icons-edit div:nth-child(2):hover {
+  background-color: rgb(42, 159, 236);
+}
+.icons-edit div:nth-child(2) i {
+  color: rgb(42, 159, 236);
+  transition: var(--main-transition);
+}
+.icons-edit div:nth-child(2):hover i {
+  color: #fff;
+}
+.icons-edit div:nth-child(1) {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  border: 1px solid rgb(255, 0, 76);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: var(--main-transition);
+}
+.icons-edit div:nth-child(1):hover {
+  background-color: rgb(255, 0, 76);
+}
+.icons-edit div:nth-child(1) i {
+  color: rgb(255, 0, 76);
+  transition: var(--main-transition);
+}
+.icons-edit div:nth-child(1):hover i{
+  color: #fff;
 }
 /* button */
 .contact-btn {

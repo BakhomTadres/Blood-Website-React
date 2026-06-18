@@ -1,47 +1,91 @@
 import Footer from "./Components/Footer";
 import Header from "./Components/Header";
-import { useState } from "react";
-
-export default function Donors({ donors }) {
+import { useState, useEffect } from "react";
+import { useDonors } from "./DonorsContext";
+import axios from "axios";
+import { useUser } from "./UserContext";
+import UpdateDonor from "./Components/UpdateDonor";
+export default function Donors() {
+  const {
+    filteredDonors,
+    loading,
+    searchDonors,
+    incrementCallCount,
+    setDonors,
+    setFilteredDonors,
+  } = useDonors();
   let [cityFilter, setCityFilter] = useState("الكل");
   let [bloodGroupFilter, setBloodGroupFilter] = useState("الكل");
-  let [filteredDonors, setFilteredDonors] = useState(donors);
+  const [showUpdateDonor, setShowUpdateDonor] = useState(false);
+  const [donorId, setDonorId] = useState("");
+  const { user } = useUser();
 
-  function handleSearch() {
-    let result = donors.filter((donor) => {
-      let cityMatch = cityFilter === "الكل" || donor.city === cityFilter;
-      let bloodMatch =
-        bloodGroupFilter === "الكل" || donor.bloodGroup === bloodGroupFilter;
-      return cityMatch && bloodMatch;
-    });
-    setFilteredDonors(result);
-  }
+  const cityArray = [
+    "القاهرة",
+    "الإسكندرية",
+    "بورسعيد",
+    "السويس",
+    "الجيزة",
+    "دمياط",
+    "الدقهلية",
+    "الشرقية",
+    "القليوبية",
+    "كفر الشيخ",
+    "الغربية",
+    "المنوفية",
+    "البحيرة",
+    "الإسماعيلة",
+    "بني سويف",
+    "الفيوم",
+    "المنيا",
+    "أسيوط",
+    "سوهاج",
+    "قنا",
+    "الأقصر",
+    "أسوان",
+    "البحر الأحمر",
+    "الوادي الجديد",
+    "مطروح",
+    "شمال سيناء",
+    "جنوب سيناء",
+  ];
+  const bloodArray = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+
+  const handleSearch = () => {
+    searchDonors(bloodGroupFilter, cityFilter);
+  };
 
   return (
     <>
+      {showUpdateDonor ? (
+        <UpdateDonor
+          donorId={donorId}
+          setShowUpdateDonor={setShowUpdateDonor}
+        />
+      ) : (
+        ""
+      )}
+
       <div dir="rtl" style={{ padding: "50px 0 0", background: "#fafafa" }}>
         <Header active={"donors"} />
 
         <h1 className="donors-title">قائمة المتبرعين</h1>
 
         <div className="search">
-          <div style={{ fontSize: "18px" }}>
+          <div style={{ fontSize: "18px", width: "255px" }}>
             فصيلة الدم:
             <select
+              dir="ltr"
               name="blood-group"
               id="blood-group-donors"
               value={bloodGroupFilter}
               onChange={(e) => setBloodGroupFilter(e.target.value)}
             >
-              <option value="الكل">الكل</option>
-              <option value="+A">+A</option>
-              <option value="-A">-A</option>
-              <option value="+B">+B</option>
-              <option value="-B">-B</option>
-              <option value="+AB">+AB</option>
-              <option value="-AB">-AB</option>
-              <option value="+O">+O</option>
-              <option value="-O">-O</option>
+              {bloodArray.map((b) => (
+                <option key={b} value={b}>
+                  {b}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -53,34 +97,11 @@ export default function Donors({ donors }) {
               value={cityFilter}
               onChange={(e) => setCityFilter(e.target.value)}
             >
-              <option value="الكل">الكل</option>
-              <option value="القاهرة">القاهرة</option>
-              <option value="الإسكندرية">الإسكندرية</option>
-              <option value="بورسعيد">بورسعيد</option>
-              <option value="السويس">السويس</option>
-              <option value="الجيزة">الجيزة</option>
-              <option value="دمياط">دمياط</option>
-              <option value="الدقهلية">الدقهلية</option>
-              <option value="الشرقية">الشرقية</option>
-              <option value="القليوبية">القليوبية</option>
-              <option value="كفر الشيخ">كفر الشيخ</option>
-              <option value="الغربية">الغربية</option>
-              <option value="المنوفية">المنوفية</option>
-              <option value="البحيرة">البحيرة</option>
-              <option value="الإسماعيلة">الإسماعيلة</option>
-              <option value="بني سويف">بني سويف</option>
-              <option value="الفيوم">الفيوم</option>
-              <option value="المنيا">المنيا</option>
-              <option value="أسيوط">أسيوط</option>
-              <option value="سوهاج">سوهاج</option>
-              <option value="قنا">قنا</option>
-              <option value="الأقصر">الأقصر</option>
-              <option value="أسوان">أسوان</option>
-              <option value="البحر الأحمر">البحر الأحمر</option>
-              <option value="الوادي الجديد">الوادي الجديد</option>
-              <option value="مطروح">مطروح</option>
-              <option value="شمال سيناء">شمال سيناء</option>
-              <option value="جنوب سيناء">جنوب سيناء</option>
+              {cityArray.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -92,18 +113,59 @@ export default function Donors({ donors }) {
         <h1 style={{ margin: "30px 0", textAlign: "center" }}>
           المتبرعون المتاحون
         </h1>
-
         <div className="donors">
-          {filteredDonors.length === 0 ? (
+          {loading ? (
+            <p className="donors-error" style={{ textAlign: "center" }}>
+              جاري التحميل...
+            </p>
+          ) : filteredDonors.length === 0 ? (
             <p className="donors-error">لا يوجد متبرعين مطابقين للبحث</p>
           ) : (
             filteredDonors.map((donor, index) => (
               <div className="card" key={index}>
+                {user && user.role === "admin" ? (
+                  <div className="icons-edit">
+                    <div
+                      onClick={async () => {
+                        const token = localStorage.getItem("token");
+
+                        await axios.delete(
+                          `https://blood-website-backend.vercel.app/api/donors/${donor._id}`,
+                          {
+                            headers: {
+                              Authorization: `Bearer ${token}`,
+                            },
+                          },
+                        );
+                        setDonors(
+                          filteredDonors.filter((d) => d._id != donor._id),
+                        );
+                        setFilteredDonors(
+                          filteredDonors.filter((d) => d._id != donor._id),
+                        );
+                      }}
+                    >
+                      <i className="fa-solid fa-trash"></i>
+                    </div>
+                    <div
+                      onClick={() => {
+                        setDonorId(donor._id);
+                        setShowUpdateDonor(true);
+                      }}
+                    >
+                      <i className="fa-solid fa-pen-to-square"></i>
+                    </div>
+                  </div>
+                ) : (
+                  ""
+                )}
                 <div className="card-header">
-                  <div className="profile">
+                  <div className="profile-donor">
                     <i className="fa-solid fa-circle-user"></i>
                   </div>
-                  <span className="blood">{donor.bloodGroup}</span>
+                  <span dir="ltr" className="blood">
+                    {donor.bloodGroup}
+                  </span>
                 </div>
                 <div className="card-body">
                   <h3>{donor.name}</h3>
@@ -121,7 +183,10 @@ export default function Donors({ donors }) {
                 </div>
                 <button
                   className="contact-btn"
-                  onClick={() => (window.location.href = `tel:${donor.phone}`)}
+                  onClick={async () => {
+                    await incrementCallCount();
+                    window.location.href = `tel:${donor.phone}`;
+                  }}
                 >
                   تواصل معه
                 </button>

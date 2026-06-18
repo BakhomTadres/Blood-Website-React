@@ -1,24 +1,25 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
-
+import { useUser } from "../UserContext";
+import ProfileDropdown from "./ProfileDropDown";
 export default function Header({ active }) {
   const navigate = useNavigate();
 
   let [isLoggedIn, setIsLoggedIn] = useState(
-    localStorage.getItem("isLoggedIn") === "true",
+    localStorage.getItem("token") ? true : false,
   );
   let [isMenuOpen, setIsMenuOpen] = useState(false);
+  let [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  const { user, loading } = useUser();
 
   function handleAuthClick(e) {
     e.preventDefault();
     if (isLoggedIn) {
-      // تسجيل خروج
-      localStorage.removeItem("isLoggedIn");
-      localStorage.removeItem("userName");
+      localStorage.removeItem("token");
       setIsLoggedIn(false);
-      navigate("/login")
+      navigate("/login");
     } else {
-      // الذهاب لصفحة التسجيل
       navigate("/register");
     }
   }
@@ -80,11 +81,19 @@ export default function Header({ active }) {
         </nav>
         <div className="container">
           <div className="logo-section">
-            <div className="bar" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            <div
+              className="bar"
+              onClick={() => {
+                setIsMenuOpen(!isMenuOpen);
+              }}
+            >
               {isMenuOpen ? (
                 <i className="fa-solid fa-xmark"></i>
               ) : (
-                <i className="fa-solid fa-bars"></i>
+                <i
+                  onClick={() => setIsProfileOpen(false)}
+                  className="fa-solid fa-bars"
+                ></i>
               )}
             </div>
             <div className="logo">
@@ -139,13 +148,51 @@ export default function Header({ active }) {
             </ul>
           </nav>
 
-          <div
-            style={{ margin: "10px", cursor: "pointer" }}
-            className="header-action"
-          >
-            <a onClick={handleAuthClick} className="btn-register">
-              {isLoggedIn ? "تسجيل الخروج" : "التسجيل"}
-            </a>
+          <div className="header-action">
+            {isLoggedIn ? (
+              <>
+                <div
+                  className="profile"
+                  onClick={() => {
+                    setIsProfileOpen(!isProfileOpen);
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  {user ? user.name.charAt(0).toUpperCase() : ""}
+                </div>
+                {isProfileOpen ? (
+                  <div
+                    onClick={() => {
+                      setIsProfileOpen(false);
+                    }}
+                    style={{
+                      position: "fixed",
+                      zIndex: 10,
+                      backgroundColor: "#0000005e",
+                      width: "100vw",
+                      height: "calc(100vh - 78px)",
+                      top: "78px",
+                      left: "0",
+                    }}
+                  />
+                ) : (
+                  ""
+                )}
+
+                <ProfileDropdown
+                  isOpen={isProfileOpen}
+                  onClose={() => setIsProfileOpen(false)}
+                />
+              </>
+            ) : (
+              <a
+                onClick={handleAuthClick}
+                className="btn-register"
+                style={{ cursor: "pointer" }}
+              >
+                التسجيل
+              </a>
+            )}
           </div>
         </div>
       </header>

@@ -8,25 +8,39 @@ import Login from "./Login.jsx";
 import Details from "./Details.jsx";
 import Add from "./Add.jsx";
 import Donors from "./Donors.jsx";
+import { useUser } from "./UserContext.jsx";
 
 function App() {
-  const [count, setCount] = useState(0);
-  let [donors, setDonors] = useState(
-    JSON.parse(localStorage.getItem("donors")) || [],
-  );
+  const { user, loading } = useUser();
+
   return (
     <>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/about" element={<About />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
         <Route
-          path="/add"
-          element={<Add donors={donors} setDonors={setDonors} />}
+          path="/login"
+          element={
+            loading && localStorage.getItem("token") ? null : user ? (
+              <HomePage />
+            ) : (
+              <Login />
+            )
+          }
         />
+        <Route
+          path="/register"
+          element={
+            loading && localStorage.getItem("token") ? null : user ? (
+              <HomePage />
+            ) : (
+              <Register />
+            )
+          }
+        />
+        <Route path="/add" element={<Add />} />
         <Route path="/details" element={<Details />} />
-        <Route path="/donors" element={<Donors donors={donors} />} />
+        <Route path="/donors" element={<Donors />} />
       </Routes>
     </>
   );

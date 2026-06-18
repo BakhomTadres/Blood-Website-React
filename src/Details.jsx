@@ -1,7 +1,9 @@
 import Footer from "./Components/Footer";
 import Header from "./Components/Header";
+import { useDonors } from "./DonorsContext";
 
 export default function Details() {
+  const { donors, callCount } = useDonors();
   return (
     <>
       <Header active={"details"} />
@@ -16,7 +18,7 @@ export default function Details() {
                 <i className="fa-solid fa-heart"></i>
               </div>
               <div className="stats-text">
-                <h2>32,541</h2>
+                <h2>{callCount}</h2>
                 <p>حياة أُنقذت</p>
               </div>
             </div>
@@ -28,7 +30,7 @@ export default function Details() {
                 <i className="fa-solid fa-phone"></i>
               </div>
               <div className="stats-text">
-                <h2>8,122</h2>
+                <h2>{callCount}</h2>
                 <p>نداء للتبرع</p>
               </div>
             </div>
@@ -40,7 +42,7 @@ export default function Details() {
                 <i className="fa-solid fa-user"></i>
               </div>
               <div className="stats-text">
-                <h2>25,430</h2>
+                <h2>{donors.length}</h2>
                 <p>متبرع مسجل</p>
               </div>
             </div>
