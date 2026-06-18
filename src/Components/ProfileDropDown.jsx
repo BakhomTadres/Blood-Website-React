@@ -87,7 +87,7 @@ export default function ProfileDropdown({ isOpen, onClose }) {
             position: "absolute",
             left: "50%",
             transform: "translateX(-50%)",
-            bottom: "50px",
+            bottom: "60px",
           }}
         >
           <i
