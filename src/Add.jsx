@@ -237,7 +237,7 @@ export default function Add({ donors, setDonors }) {
                     const token = localStorage.getItem("token");
 
                     axios
-                      .post("https://blood-website-backend.vercel.app//api/donors/add", donor, {
+                      .post("https://blood-website-backend.vercel.app/api/donors/add", donor, {
                         headers: {
                           Authorization: `Bearer ${token}`,
                         },
