@@ -39,7 +39,7 @@ export default function ProfileDropdown({ isOpen, onClose }) {
           minWidth: "300px",
           zIndex: 20,
           textAlign: "center",
-          height: "100vh",
+          height: "calc(100vh - 77px)",
         }}
       >
         <div
@@ -87,7 +87,7 @@ export default function ProfileDropdown({ isOpen, onClose }) {
             position: "absolute",
             left: "50%",
             transform: "translateX(-50%)",
-            bottom: "100px",
+            bottom: "20px",
           }}
         >
           <i
