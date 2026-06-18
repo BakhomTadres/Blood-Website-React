@@ -1,20 +1,23 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
-
+import { useUser } from "./UserContext";
 const DonorsContext = createContext();
 
 export function DonorsProvider({ children }) {
   const [donors, setDonors] = useState([]);
   const [filteredDonors, setFilteredDonors] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const { user } = useUser();
   const fetchDonors = async (params = {}) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("https://blood-website-backend.vercel.app/api/donors", {
-        params,
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.get(
+        "https://blood-website-backend.vercel.app/api/donors",
+        {
+          params,
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
       return response.data.data.donors;
     } catch (error) {
       console.log(error);
@@ -22,21 +25,22 @@ export function DonorsProvider({ children }) {
     }
   };
 
+  const [callCount, setCallCount] = useState(0);
 
- const [callCount, setCallCount] = useState(0);
-
-useEffect(() => {
-  const fetchStats = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get("https://blood-website-backend.vercel.app/api/stats");
-      setCallCount(response.data.data.callCount);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  fetchStats();
-}, []);
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          "https://blood-website-backend.vercel.app/api/stats",
+        );
+        setCallCount(response.data.data.callCount);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchStats();
+  }, [user]);
 
   useEffect(() => {
     const loadDonors = async () => {
@@ -62,24 +66,33 @@ useEffect(() => {
     setFilteredDonors((prev) => [...prev, donor]);
   };
 
-
-const incrementCallCount = async () => {
-  try {
-    const token = localStorage.getItem("token");
-    const res = await axios.post(
-      "https://blood-website-backend.vercel.app/api/stats/call",
-      {},
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    setCallCount(res.data.data.callCount);
-  } catch (error) {
-    console.log(error);
-  }
-};
+  const incrementCallCount = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.post(
+        "https://blood-website-backend.vercel.app/api/stats/call",
+        {},
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      setCallCount(res.data.data.callCount);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <DonorsContext.Provider
-      value={{ donors, setDonors,filteredDonors, setFilteredDonors,loading, searchDonors, addDonor , callCount, incrementCallCount}}
+      value={{
+        donors,
+        setDonors,
+        filteredDonors,
+        setFilteredDonors,
+        loading,
+        searchDonors,
+        addDonor,
+        callCount,
+        incrementCallCount,
+      }}
     >
       {children}
     </DonorsContext.Provider>
