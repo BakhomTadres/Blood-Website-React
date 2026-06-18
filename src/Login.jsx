@@ -33,7 +33,7 @@ export default function Login() {
 
     // API Call
     try {
-      const res = await axios.post("http://localhost:3000/api/users/login", {
+      const res = await axios.post("https://blood-website-backend.vercel.app/api/users/login", {
         email: emailInput,
         password: passwordInput,
       });
