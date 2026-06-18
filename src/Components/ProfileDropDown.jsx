@@ -13,7 +13,7 @@ export default function ProfileDropdown({ isOpen, onClose }) {
     navigate("/login");
 
     await axios.post(
-      "http://localhost:3000/api/users/logout",
+      "https://blood-website-backend.vercel.app/api/users/logout",
       {},
       {
         headers: {
