@@ -75,7 +75,7 @@ export default function ProfileDropdown({ isOpen, onClose }) {
         <button
           onClick={handleLogout}
           style={{
-            width: "90%",
+            width: "80%",
             padding: "10px",
             backgroundColor: "#ff4d4d",
             color: "#fff",
@@ -84,9 +84,10 @@ export default function ProfileDropdown({ isOpen, onClose }) {
             cursor: "pointer",
             fontWeight: "bold",
             fontSize: "14px",
-            position: "relative",
-            top: "50%",
-            transform: "translateY(-50%)",
+            position: "absolute",
+            left: "50%",
+            transform: "translateX(-50%)",
+            bottom: "100px",
           }}
         >
           <i
