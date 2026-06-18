@@ -21,6 +21,7 @@ export default function Donors() {
   const { user } = useUser();
 
   const cityArray = [
+    "الكل",
     "القاهرة",
     "الإسكندرية",
     "بورسعيد",
@@ -49,7 +50,7 @@ export default function Donors() {
     "شمال سيناء",
     "جنوب سيناء",
   ];
-  const bloodArray = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+  const bloodArray = ["الكل","A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
   const handleSearch = () => {
     searchDonors(bloodGroupFilter, cityFilter);
