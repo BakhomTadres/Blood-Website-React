@@ -29,9 +29,7 @@ useEffect(() => {
   const fetchStats = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("https://blood-website-backend.vercel.app/api/stats", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.get("https://blood-website-backend.vercel.app/api/stats");
       setCallCount(response.data.data.callCount);
     } catch (error) {
       console.log(error);
